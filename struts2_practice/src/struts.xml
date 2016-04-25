@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.action.extension" value="action,do,,"></constant>
+	<constant name="struts.devMode" value="true"></constant>
+	<constant name="struts.ui.theme" value="simple"></constant>
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.multipart.maxSize" value="20971520"></constant>
+	<constant name="struts.custom.i18n.resources" 
+		value="cyiq.action.fileupload,
+				cyiq.action.token	
+		"></constant>
+	<package name="login" namespace="/login" extends="struts-default">
+		<action name="LoginAction_*" class="cyiq.action.LoginAction" method="{1}">
+			<result name="home">/login/home.jsp</result>
+			<result name="input">/login/login.jsp</result>
+		</action>
+	</package>
+	<package name="user" namespace="/user" extends="struts-default">
+		<interceptors>
+			<interceptor-stack name="newStack">
+				<interceptor-ref name="defaultStack"/>
+				<interceptor-ref name="token">
+					<param name="includeMethods">save</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<action name="UserAction_*" class="cyiq.action.UserAction" method="{1}">
+			<result name="add">/user/add.jsp</result>
+			<result name="list">/user/list.jsp</result>
+			<result name="tolist" type="redirectAction">UserAction_list</result>
+			<result name="input">/user/error.jsp</result>
+			<result name="edit">/user/edit.jsp</result>
+			<result name="view">/user/view.jsp</result>
+			<result name="download" type="stream">
+				<param name="contentType">application/x-msdownload</param>
+				<param name="inputName">inputStreamxxx</param>
+				<param name="ContentDisposition">attachment;filename=${filename}</param>
+				<param name="bufferSize">1024</param>
+			</result>
+			<result name="invalid.tocken">/user/error.jsp</result>
+			
+			<interceptor-ref name="defaultStack">
+				<param name="fileUpload.maximumSize">20971520</param>
+				<param name="fileUpload.allowedTypes">application/msword</param>
+				<param name="fileUpload.allowedExtensions">.doc</param>
+			</interceptor-ref>
+		</action>
+	</package>
+	
+</struts>
